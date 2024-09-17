@@ -17,7 +17,10 @@ export default function UI() {
   >([]);
 
   const fetchNotes = async () => {
-    const { data, error } = await supabase.from('note').select('*');
+    const { data, error } = await supabase
+      .from('note')
+      .select('*')
+      .order('id', { ascending: true });
     if (error) {
       alert(error.message);
       return;
@@ -46,7 +49,11 @@ export default function UI() {
             setIsCreating={setIsCreating}
           />
         ) : activeNoteId ? (
-          <NoteViewer note={notes.find((note) => note.id === activeNoteId)} />
+          <NoteViewer
+            setActiveNoteId={setActiveNoteId}
+            fetchNotes={fetchNotes}
+            note={notes.find((note) => note.id === activeNoteId)}
+          />
         ) : (
           <EmptyNote />
         )}
