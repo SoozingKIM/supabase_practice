@@ -5,7 +5,7 @@ import Header from '@/components/Header';
 import NewNote from '@/components/NewNote';
 import NoteViewer from '@/components/NoteViewer';
 import Sidebar from '@/components/Sidebar';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { supabase } from '../../utils/supabase';
 import { Database } from '../../types_db';
 
@@ -17,7 +17,7 @@ export default function UI() {
   >([]);
   const [search, setSearch] = useState<string>('');
 
-  const fetchNotes = async () => {
+  const fetchNotes = useCallback(async () => {
     const { data, error } = await supabase
       .from('note')
       .select('*')
@@ -29,15 +29,15 @@ export default function UI() {
       return;
     }
     setNotes(data);
-  };
-
-  useEffect(() => {
-    fetchNotes();
-  }, []);
-
-  useEffect(() => {
-    fetchNotes();
   }, [search]);
+
+  useEffect(() => {
+    fetchNotes();
+  }, [fetchNotes]);
+
+  // useEffect(() => {
+  //   fetchNotes();
+  // }, [search]);
 
   return (
     <main className="w-full h-screen flex flex-col">
