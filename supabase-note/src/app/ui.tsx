@@ -1,7 +1,11 @@
 'use client';
 
+import EmptyNote from '@/components/EmptyNote';
 import Header from '@/components/Header';
+import NewNote from '@/components/NewNote';
+import NoteViewer from '@/components/NoteViewer';
 import Sidebar from '@/components/Sidebar';
+import { useState } from 'react';
 
 const notes = [
   { id: 1, title: '노트 1', content: '노트 1 내용입니다.' },
@@ -10,13 +14,26 @@ const notes = [
 ];
 
 export default function UI() {
+  const [activeNoteId, setActiveNoteId] = useState<null | number>(null);
+  const [isCreating, setIsCreating] = useState(false);
   return (
     <main className="w-full h-screen flex flex-col">
       <Header />
       <div className="grow relative">
-        <Sidebar notes={notes} />
-        <div className="w-2/3 absolute top-0 bottom-0 right-0 bg-slate-300"></div>
-        {/* new note */}
+        <Sidebar
+          activeNoteId={activeNoteId}
+          setActiveNoteId={setActiveNoteId}
+          setIsCreating={setIsCreating}
+          notes={notes}
+        />
+        {isCreating ? (
+          <NewNote setIsCreating={setIsCreating} />
+        ) : activeNoteId ? (
+          <NoteViewer note={notes.find((note) => note.id === activeNoteId)} />
+        ) : (
+          <EmptyNote />
+        )}
+
         {/* note viewer (Edit/View) */}
         {/* Empty note */}
       </div>
