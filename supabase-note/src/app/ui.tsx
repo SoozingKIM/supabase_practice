@@ -15,12 +15,15 @@ export default function UI() {
   const [notes, setNotes] = useState<
     Database['public']['Tables']['note']['Row'][]
   >([]);
+  const [search, setSearch] = useState<string>('');
 
   const fetchNotes = async () => {
     const { data, error } = await supabase
       .from('note')
       .select('*')
-      .order('id', { ascending: true });
+      .order('id', { ascending: true })
+      .ilike('title', `%${search}%`); // title에 search가 포함된 모든 글씨를 검색함.
+
     if (error) {
       alert(error.message);
       return;
@@ -32,6 +35,10 @@ export default function UI() {
     fetchNotes();
   }, []);
 
+  useEffect(() => {
+    fetchNotes();
+  }, [search]);
+
   return (
     <main className="w-full h-screen flex flex-col">
       <Header />
@@ -41,6 +48,8 @@ export default function UI() {
           setActiveNoteId={setActiveNoteId}
           setIsCreating={setIsCreating}
           notes={notes}
+          search={search}
+          setSearch={setSearch}
         />
         {isCreating ? (
           <NewNote
