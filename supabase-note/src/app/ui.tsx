@@ -40,7 +40,11 @@ export default function UI() {
           notes={notes}
         />
         {isCreating ? (
-          <NewNote setIsCreating={setIsCreating} />
+          <NewNote
+            setActiveNoteId={setActiveNoteId}
+            fetchNotes={fetchNotes}
+            setIsCreating={setIsCreating}
+          />
         ) : activeNoteId ? (
           <NoteViewer note={notes.find((note) => note.id === activeNoteId)} />
         ) : (
